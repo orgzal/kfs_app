@@ -1,0 +1,28 @@
+{
+    "title_app": "Kafr El Sheikh Governorate",
+    "splash": {
+        "loading": "Preparing the app"
+    },
+    "home": {
+        "title": "Home",
+        "welcome": "Welcome, {name}",
+        "follow_us": "Follow us on social media",
+        "important_events": "Important Events",
+        "follow_last_events": "Follow the latest events and official decisions within Kafr El Sheikh Governorate.",
+        "about_gover": "About the Governorate",
+        "contact_us": "Contact Us",
+        "news": "News",
+        "services": "Services",
+        "view_all_services": "View All Services",
+        "view_all_projects": "View All Projects",
+        "view_option_investments": "View Investment Opportunities",
+        "projects": "Projects",
+        "investment": "Investment",
+        "tourism": "Tourism",
+        "last_news": "Latest News",
+        "news_gover": "Governorate News",
+        "desc_projects": "View the governorate's annual investment plan, and documented reports for the current and previous years. We are shaping the future through a national vision aimed at improving infrastructure, services, and localizing sustainable development across all centers.",
+        "desc_last_news": "Daily updates highlighting the latest news and updates of the governorate.",
+        "view_all_news": "View All News"
+    }
+}
