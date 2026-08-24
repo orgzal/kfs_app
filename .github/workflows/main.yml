@@ -1,38 +1,69 @@
-name: Build Flutter IPA
+name: Build Flutter iOS IPA
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  build-ios:
     runs-on: macos-latest
 
     steps:
+      # 1. تحميل المشروع من GitHub
       - name: Checkout
         uses: actions/checkout@v4
 
+      # 2. تثبيت Flutter
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
           channel: stable
           cache: true
 
-      - name: Get packages
+      # 3. عرض إصدارات البيئة
+      - name: Check Environment
+        run: |
+          flutter --version
+          xcodebuild -version
+          pwd
+          ls -la
+
+      # 4. تحميل Packages
+      - name: Get Flutter Packages
         run: flutter pub get
 
-      - name: Build IPA
-        run: flutter build ipa --release --no-codesign
+      # 5. بناء تطبيق iOS بدون Apple Signing
+      - name: Build iOS
+        run: flutter build ios --release --no-codesign
 
-      - name: Find IPA
+      # 6. التأكد من وجود Runner.app
+      - name: Check iOS Build
         run: |
-          echo "Searching for IPA files..."
-          find . -name "*.ipa" -type f
-          echo "Searching iOS build..."
-          find build/ios -maxdepth 3 -type f 2>/dev/null || true
+          echo "Checking iOS build..."
+          ls -la build/ios/iphoneos/
+          ls -la build/ios/iphoneos/Runner.app
 
+      # 7. إنشاء مجلد Payload
+      - name: Create Payload
+        run: |
+          rm -rf Payload
+          mkdir Payload
+          cp -R build/ios/iphoneos/Runner.app Payload/
+
+      # 8. تحويل التطبيق إلى IPA
+      - name: Create IPA
+        run: |
+          zip -r kts_app_unsigned.ipa Payload
+
+      # 9. التأكد من إنشاء IPA
+      - name: Check IPA
+        run: |
+          ls -lh kts_app_unsigned.ipa
+          file kts_app_unsigned.ipa
+
+      # 10. رفع IPA إلى GitHub
       - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: flutter-ipa
-          path: build/ios/ipa/*.ipa
+          name: kts-app-ipa
+          path: kts_app_unsigned.ipa
           if-no-files-found: error
