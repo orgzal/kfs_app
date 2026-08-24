@@ -1,18 +1,15 @@
-name: Build iOS
+name: Build Flutter IPA
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
 
 jobs:
-  build-ios:
+  build:
     runs-on: macos-latest
 
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
@@ -20,17 +17,22 @@ jobs:
           channel: stable
           cache: true
 
-      - name: Flutter version
-        run: flutter --version
-
-      - name: Get dependencies
+      - name: Get packages
         run: flutter pub get
 
-      - name: Build iOS
-        run: flutter build ios --release --no-codesign
+      - name: Build IPA
+        run: flutter build ipa --release --no-codesign
 
-      - name: Upload iOS build
+      - name: Find IPA
+        run: |
+          echo "Searching for IPA files..."
+          find . -name "*.ipa" -type f
+          echo "Searching iOS build..."
+          find build/ios -maxdepth 3 -type f 2>/dev/null || true
+
+      - name: Upload IPA
         uses: actions/upload-artifact@v4
         with:
-          name: ios-build
-          path: build/ios/iphoneos/Runner.app
+          name: flutter-ipa
+          path: build/ios/ipa/*.ipa
+          if-no-files-found: error
